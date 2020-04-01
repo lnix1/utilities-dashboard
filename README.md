@@ -1,6 +1,6 @@
 # Utilities Dashboard Repo
 
-This repo serves to remotely store the Django stack for the utilities dashboard.
+This repo serves to remotely store the Django stack for a dashboard designed to facilitate utilities expense tracking for my roomates and I, as well as other features to facilitate household expense accounting.
 
 **Dashboard Description**
 
