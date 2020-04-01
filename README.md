@@ -17,9 +17,13 @@ To open a local session and use the dashboard through your browser, follow these
 1) Download the directories 'house_dashboard' and 'myvenv'.
 2) In the terminal, cd to the directory containing the two downloaded subdirectories.
 3) Run the following commands:
+
 	$ source myvenv/bin/activate
+
 	$ cd house_dashboard
+
 	$ python manage.py runserver
+
 4) If the dashboard has activateed properly, you should see a line in the terminal similar to: 'Starting development server at http://127.0.0.1:8000/'
 5) Copy and paste the 'http' link from the terminal into your browser url to open the dashboard.
 
@@ -28,9 +32,13 @@ To open a local session and use the dashboard through your browser, follow these
 1) Download the directories 'house_dashboard' and 'myvenv'.
 2) In the terminal, cd to the directory containing the two downloaded subdirectories.
 3) Run the following commands:
+
         $ source myvenv/bin/activate
+
         $ cd house_dashboard
+
         $ python3 manage.py runserver
+
 4) If the dashboard has activateed properly, you should see a line in the terminal similar to: 'Starting development server at http://127.0$
 5) Copy and paste the 'http' link from the terminal into your browser url to open the dashboard.
 
