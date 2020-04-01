@@ -14,7 +14,7 @@ To open a local session and use the dashboard through your browser, follow these
 
 *Mac OS*
 
-1) Download the directories 'house_dashboard' and 'myvenv'.
+1) Download the directories *house_dashboard* and *myvenv*.
 2) In the terminal, cd to the directory containing the two downloaded subdirectories.
 3) Run the following commands:
 
@@ -29,7 +29,7 @@ To open a local session and use the dashboard through your browser, follow these
 
 *Linux (Ubuntu 18.04)*
 
-1) Download the directories 'house_dashboard' and 'myvenv'.
+1) Download the directories *house_dashboard* and *myvenv*.
 2) In the terminal, cd to the directory containing the two downloaded subdirectories.
 3) Run the following commands:
 
