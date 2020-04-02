@@ -46,3 +46,7 @@ To open a local session and use the dashboard through your browser, follow these
 
 1) To end the session, type 'Control + C' into the terminal running the server.
 2) To deactivate the virtual environment and return to base, type 'deactivate'.
+
+#### Note on the virtual environment supporting the project
+
+The virtual env. 'myvenv' is constructed to contain all dependencies for the stack. However, it may contain spurious packages imported during experimentation while building features to be added to the dashboard. In the final product, these spurious python packages will need to be removed.
