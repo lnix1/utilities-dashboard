@@ -1,108 +1,3 @@
-#---------------------------------------------------------------------#
-# Old code I no longer need that could be useful in pulling down
-# and scrapping the page I need.
-#---------------------------------------------------------------------#
-from bs4 import BeautifulSoup
-
-# get login page
-resp = session.get(site)
-html = resp.text
-
-# get BeautifulSoup object of the html of the login page
-soup = BeautifulSoup(html , 'lxml')
-
-# submit post request with username / password and other needed info
-post_resp = session.post(site, data = data)
-
-post_soup = BeautifulSoup(post_resp.content , 'lxml')
-#---------------------------------------------------------------------#
-
-
-
-#---------------------------------------------------------------------#
-# New code that works in logging into the site
-# look at the documentation for urllib.requests moving foward, particularly the .open method attached to build_opener
-#---------------------------------------------------------------------#
-import http.cookiejar
-import urllib
-import urllib2
-
-amazon_username = 'louis.nix2@gmail.com'
-amazon_password = 'Hutchinson3!'
-
-login_data = urllib.parse.urlencode({'action': 'sign-in',
-                               'email': amazon_username,
-                               'password': amazon_password,
-                               }).encode('utf-8')
-
-cookie = http.cookiejar.CookieJar()    
-opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cookie))
-opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36')]
-
-response = opener.open('https://www.amazon.com/gp/sign-in.html')
-print(response.getcode())
-
-response = opener.open('https://www.amazon.com/gp/flex/sign-in/select.html', login_data)
-print(response.getcode())
-
-html = response.read()
-
-# From here, I need to pull the captcha image from html, and them submit a 'get' request to '/errors/validateCaptcha'
-
-# This doesn't quite do the job on getting the hidden values. the value for amzn-r is wrong.
-# the last one appended called 'field-keywords' should be the captcha entry form to enter letters pulled from image
-import lxml.html
-def form_parsing(html):
-   tree = lxml.html.fromstring(html)
-   data = {}
-   for e in tree.cssselect('form input'):
-      if e.get('name'):
-         data[e.get('name')] = e.get('value')
-   return data
-
-# Pull the input forms (though again, the second value for 'amzn-r' in the dict is wrong)
-captcha_input_data = form_parsing(html)
-
-# initialize new set of login data
-login_data_captcha = {'action': 'sign-in',
-                      'email': amazon_username,
-                      'password': amazon_password,
-                        }
-
-# Update new dictionary with captcha input values
-login_data_captcha.update(captcha_input_data)
-
-# Pull image link from 'html' object to view. (if this function works properly, it should be probably be integrated in form_parsing to improve process efficiency)
-def image_retrieval(html):
-   tree = lxml.html.fromstring(html)
-   for e in tree.cssselect('form img'):
-      if e.get('src'):
-         img = e.get('src')
-   return img
-
-captcha_image = image_retrieval(html)
-
-# Update captcha login dict with a user input from viewing the captcha image and encode for use in the opener
-captcha__user_input = input()
-login_data_captcha.update({'field-keywords': captcha__user_input})
-
-# I quite literally copy and pasted this value out of the html form since it wasn't scraped properly before
-login_data_captcha.update({'amzn-r': '&#047;'})
-
-
-login_captcha_encoded = urllib.parse.urlencode(login_data_captcha).encode('utf-8')
-
-# Submit (i believe a 'get') request to amazon with new captcha login dict. Needs to go to the url: https://www.amazon.com//errors/validateCaptcha
-# At present, this section did not return the intended response. Still stuck at captcha
-response_captcha = opener.open('https://www.amazon.com//errors/validateCaptcha', login_captcha_encoded)
-response_captcha_html = response_captcha.read()
-
-#--------------------------------------------------------------------#
-
-
-
-
-
 #--------------------------------------------------------------------#
 # Trying a headleass browser approach instead. For linux, this 
 # required downloading chromium and placing the the chrome driver
@@ -117,6 +12,9 @@ response_captcha_html = response_captcha.read()
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import os
+import pandas as pd
+from bs4 import BeautifulSoup
+import re
 
 # instantiate a chrome options object so you can set the size and headless preference
 chrome_options = Options()
@@ -133,4 +31,53 @@ order_page_html = driver.page_source
 
 # Finish the browsing session
 driver.quit()
+
+# Create the function for extracthing the order table from a given order page selected by the user
+def OrderTableExtractor(html_source):
+   order_soup = BeautifulSoup(order_page_html)
+   # Grab the table on the right of the page with the items ordered
+   order_container = order_soup.find('div', class_ = 'a-column a-span5 a-span-last')
+   # Break the order table out by the individual items, placing the the html for each as an item in a list
+   order_containers = order_container.find_all('div', class_ = 'a-box-inner')
+   # Initialize a table to fill with the order information
+   order_data_columns = ['item_name', 'qty/wgt', 'by_unit_wgt', 'unit_price', 'item_url']
+   order_data_frame = pd.DataFrame(columns=order_data_columns)
+   # Iterate over the order items and extract the desired information, placing it into a table
+   for o in order_containers[1:len(order_containers)]:
+      # Grab and format the order url 
+      item_url_end = o.find('a').get('href')
+      amazon_url_base = 'https://www.amazon.com'
+      item_url = amazon_url_base + item_url_end
+      # Grab the item name and reformat
+      item_name = o.find('span').text.strip('\n').strip()
+      # Extract all of the text from the grocery item cell
+      e = o.find_all('span')
+      # We can use the contents of the second <span> container to determine whether we are dealing with 'by unit' or 'by weight' items
+      # 'by unit' items will contain 'Qty' while 'by weight' items will contain 'per pound'
+      # The first two possible cases (for items priced by count w/ or w/o replacement) are treated the same
+      if 'Qty' in e[1].text:
+         # Extract the quantity and unit price
+         qnty_wgt_unit_price = e[1].text.split()
+         # Append both of the features to the relevant vectors
+         qty_wgt = qnty_wgt_unit_price[1]
+         unit_price = qnty_wgt_unit_price[2]
+         # Append a label specifying that this item was priced by unit
+         by_unit_wgt = 'by unit'
+      # The second two possible cases (for items bought by weight w/ or w/o replacement) are treated the same
+      else:
+         # Extract and append per_unit price
+         unit_price = re.sub('[a-z]', '', e[1].text.strip('\n').strip()).strip()
+         # Extract and append weight
+         qty_wgt = re.sub('[a-z]', '', e[6].text.strip('\n').strip()).strip()
+         # Append a label specifying that this item was priced by weight
+         by_unit_wgt = 'by weight' + ' (' + re.sub(r'\d+', '', e[1].text.strip('\n').strip()).strip('$').strip('.').strip() + ')'
+      new_order_row = pd.DataFrame({'item_name':[item_name], 'qty/wgt': [qty_wgt], 'by_unit_wgt': [by_unit_wgt], 'unit_price': [unit_price], 'item_url': [item_url]})
+      order_data_frame = order_data_frame.append(new_order_row, ignore_index=True)
+   return order_data_frame;
+
+# Call the function to test and extract a table for the Mar. 5th grocery order
+order_data_frame2 = OrderTableExtractor(order_page_html)
+
+# Write out the table into a csv. I initially tested this for March 5th grocery order
+order_data_frame2.to_csv(r'groceries_mar_5_2020.csv', index = False, header=True)
 #--------------------------------------------------------------------#
