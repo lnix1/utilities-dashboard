@@ -50,3 +50,8 @@ To open a local session and use the dashboard through your browser, follow these
 #### Note on the virtual environment supporting the project
 
 The virtual env. 'myvenv' is constructed to contain all dependencies for the stack. However, it may contain spurious packages imported during experimentation while building features to be added to the dashboard. In the final product, these spurious python packages will need to be removed.
+
+#### Note on headless chrome
+
+At the moment, the files include a download of the driver for headless chrome needed for the webdriver. The only download included at present is for linux. Other downloads for different systems or versions of chrome can be found at the following link:
+https://sites.google.com/a/chromium.org/chromedriver/downloads

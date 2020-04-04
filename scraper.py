@@ -97,14 +97,40 @@ login_captcha_encoded = urllib.parse.urlencode(login_data_captcha).encode('utf-8
 response_captcha = opener.open('https://www.amazon.com//errors/validateCaptcha', login_captcha_encoded)
 response_captcha_html = response_captcha.read()
 
+#--------------------------------------------------------------------#
 
 
 
 
 
+#--------------------------------------------------------------------#
+# Trying a headleass browser approach instead. For linux, this 
+# required downloading chromium and placing the the chrome driver
+# in /usr/bin
+# Basically follow the 'For Linux' comment here:
+# https://stackoverflow.com/questions/8255929/running-selenium-webdriver-python-bindings-in-chrome
+#
+# Selenium documentation could also be useful:
+# https://selenium-python.readthedocs.io/locating-elements.html
+#--------------------------------------------------------------------#
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import os
 
+# instantiate a chrome options object so you can set the size and headless preference
+chrome_options = Options()
+# chrome_options.add_argument("--headless")
+chrome_options.add_argument("--window-size=1920x1080")
 
+# Open the pop-out window and prompt user to login and navigate to the correct order page
+driver = webdriver.Chrome(chrome_options=chrome_options)
+driver.get("https://primenow.amazon.com/home")
 
+# Extract the entire html for the page (ideally, this would be initiated by the user when they have 
+# arrived at the correct order page)
+order_page_html = driver.page_source
 
+# Finish the browsing session
+driver.quit()
 #--------------------------------------------------------------------#
