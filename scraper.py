@@ -34,7 +34,7 @@ driver.quit()
 
 # Create the function for extracthing the order table from a given order page selected by the user
 def OrderTableExtractor(html_source):
-   order_soup = BeautifulSoup(order_page_html)
+   order_soup = BeautifulSoup(html_source)
    # Grab the table on the right of the page with the items ordered
    order_container = order_soup.find('div', class_ = 'a-column a-span5 a-span-last')
    # Break the order table out by the individual items, placing the the html for each as an item in a list
@@ -78,6 +78,22 @@ def OrderTableExtractor(html_source):
 # Call the function to test and extract a table for the Mar. 5th grocery order
 order_data_frame2 = OrderTableExtractor(order_page_html)
 
-# Write out the table into a csv. I initially tested this for March 5th grocery order
-order_data_frame2.to_csv(r'groceries_mar_5_2020.csv', index = False, header=True)
+order_data_frame2.to_csv(r'groceries_itemized_Jan_22_2020.csv', index = False, header=True)
+
+def GetOrderSummary(html_source):
+   summary_soup = BeautifulSoup(html_source)
+   summary_container = summary_soup.find_all('div', class_ = 'a-column a-span5')
+   order_summary_table = pd.DataFrame({
+    'order_date': [summary_container[0].find_all('span', id='browser-order-status-order-date')[0].text.strip('\n').strip().strip('Order date: ')],
+    'order_number': [summary_container[0].find_all('span', id='browser-order-status-order-number')[0].text.strip('\n').strip().strip('Order #: ')],
+    'item_total': [summary_container[0].find_all('span', id='checkout-order-totals-items-field')[0].text.strip('\n').strip()],
+    'delivery_fee': [summary_container[0].find_all('span', id='checkout-order-totals-deliveryFee-field')[0].text.strip('\n').strip()],
+    'tip': [summary_container[0].find_all('span', id='checkout-order-totals-tip-field')[0].text.strip('\n').strip()],
+    'order_total': [summary_container[0].find_all('span', id='checkout-total-price-field')[0].text.strip('\n').strip()]})
+   return order_summary_table;
+
+order_summary_table_test = GetOrderSummary(order_page_html)
+
+order_summary_table_test.to_csv(r'groceries_summary_Jan_22_2020.csv', index = False, header=True)
+
 #--------------------------------------------------------------------#
