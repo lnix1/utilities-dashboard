@@ -39,7 +39,7 @@ To open a local session and use the dashboard through your browser, follow these
 
         $ python3 manage.py runserver
 
-4) If the dashboard has activateed properly, you should see a line in the terminal similar to: 'Starting development server at http://127.0$
+4) If the dashboard has activateed properly, you should see a line in the terminal similar to: 'Starting development server at http://127.0.0.1:8000/$
 5) Copy and paste the 'http' link from the terminal into your browser url to open the dashboard.
 
 **Deactivate the Dashboard**
