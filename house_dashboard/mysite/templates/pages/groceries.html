@@ -60,8 +60,8 @@
 
       <!-- Nav Item - Groceries Page -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="buyer_prediction_tool.html" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-bacon" href="buyer_prediction_tool.html"></i>
+        <a class="nav-link collapsed" href="groceries.html" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-bacon" href="groceries.html"></i>
           <span>Groceries</span>
         </a>
       </li>
@@ -88,7 +88,7 @@
 
           <!-- Topbar Label -->
           <div class="d-sm-flex align-items-center justify-content-between">
-            <h1 class="h2 mb-0 text-gray-900">Buyer Prediction Tool</h1>
+            <h1 class="h2 mb-0 text-gray-900">Grocery Tools</h1>
           </div>
 
           <!-- Topbar Navbar -->
@@ -110,26 +110,32 @@
           <div class="row">
 
             <!-- Content Column -->
-            <div class="col-lg-6 mb-4">
+            <div class="col-lg-3 mb-4">
 
               <!-- Project Card Example -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-success">Unsorted Order</h6>
+                  <h6 class="m-0 font-weight-bold text-success">Access Order Receipt</h6>
                 </div>
                 <div class="card-body">
-                  
+                  <form action="" method="post">
+                    {% csrf_token %}
+                    <input id="amzn_usr" type="text" name="amzn_usr" placeholder="User Name">
+                    <input id="amzn_pass" type="text" name="amzn_pass" placeholder="Password">
+                    <input id="date" type="date" name="date_field" value="">
+                    <input type="submit" value="OK">
+                  </form>
                 </div>
               </div>
 
             </div>
 
-            <div class="col-lg-6 mb-4">
+            <div class="col-lg-9 mb-4">
 
               <!-- Illustrations -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-success">Sorted Order Predictions</h6>
+                  <h6 class="m-0 font-weight-bold text-success">Scraped Grocery List</h6>
                 </div>
                 <div class="card-body">
                   
@@ -147,46 +153,20 @@
             <!-- Project Card Example -->
             <div class="card shadow mb-4">
               <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-success">Correctly Sorted Order Input</h6>
-              </div>
-              <div class="card-body">
-              </div>
-            </div>
-
-        </div>
-
-        </div>
-        <!-- /.container-fluid -->
-
-      </div>
-      <!-- End of Main Content -->
-
-      <!-- Begin 2nd Page Content -->
-      <div class="container-fluid">
-
-        <!-- Content Row -->
-        <div class="row">
-
-          <!-- Content Column -->
-          <div class="col-lg-12 mb-4">
-
-            <!-- Project Card Example -->
-            <div class="card shadow mb-4">
-              <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-success">Past Orders</h6>
               </div>
               <div class="card-body">
               </div>
             </div>
 
+          </div>
+
         </div>
+        <!-- /.container-fluid -->
 
       </div>
-      <!-- /.container-fluid -->
-
+      <!-- End of Main Content -->
     </div>
-    <!-- End of 2nd Page Content -->
-
       <!-- Footer -->
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
