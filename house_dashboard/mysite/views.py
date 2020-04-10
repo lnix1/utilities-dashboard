@@ -41,9 +41,9 @@ def groceries(request):
         wait = WebDriverWait(driver, 10)
         element = wait.until(EC.element_to_be_clickable((By.XPATH, "(//div[@class='show-for-large page_header_drop_menu_trigger__triggerText__3dDUD'])[3]")))
         driver.find_element_by_xpath("(//div[@class='show-for-large page_header_drop_menu_trigger__triggerText__3dDUD'])[3]").click()
-        driver.find_element_by_id('ap_email').send_keys(request.POST.get('amzn_user'))  
+        driver.find_element_by_id('ap_email').send_keys(request.POST.get('amzn_user'))
         driver.find_element_by_id('ap_password').send_keys(request.POST.get('amzn_pass'))
-        driver.find_element_by_id('signInSubmit').click()
+          driver.find_element_by_id('signInSubmit').click()
         driver.find_element_by_xpath("(//a[@class='a-spacing-small a-link-normal'])[1]").click()
         # Pull all of the tables from the html with the order dates
         order_dates_page = driver.page_source
